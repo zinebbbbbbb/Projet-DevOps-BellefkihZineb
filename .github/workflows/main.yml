@@ -1,0 +1,29 @@
+name: CI - Java Simple Project
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Installer Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Compiler le fichier Java
+        run: javac $(find . -name "*.java")
+
+      - name: Exécuter la classe principale
+        run: |
+          echo "Lancement de l'application..."
+          java $(grep -rl "public static void main" . | sed 's/\.java//; s/\.\///; s/\//./g')
